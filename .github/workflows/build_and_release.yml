@@ -14,7 +14,7 @@ on:
       release_title:
         description: 'Title for the release'
         required: false
-        default: 'MeloNX Tomadachi Life: LTD'
+        default: 'MeloNX Tomodachi Life: LTD'
 
 jobs:
   build-and-release:
