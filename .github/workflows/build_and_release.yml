@@ -52,6 +52,7 @@ jobs:
             -sdk iphoneos \
             -arch arm64 \
             -derivedDataPath build \
+            RODUCT_BUNDLE_IDENTIFIER="com.stossy11.MeloNX" \
             CODE_SIGNING_ALLOWED=NO \
             CODE_SIGNING_REQUIRED=NO \
             CODE_SIGN_IDENTITY="" \
