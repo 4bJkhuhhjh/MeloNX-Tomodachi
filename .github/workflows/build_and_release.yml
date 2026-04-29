@@ -64,13 +64,14 @@ jobs:
           mkdir -p build/ipa/Payload
           cp -R build/Build/Products/Release-iphoneos/MeloNX.app build/ipa/Payload/
           cp src/MeloNX/MeloNX/Info.plist build/ipa/Payload/MeloNX.app/
+          plutil -replace CFBundleIdentifier -string "com.stossy11.MeloNX" build/ipa/Payload/MeloNX.app/Info.plist
           cd build/ipa
           zip -r MeloNX-v${{ github.event.inputs.app_version }}-Patch-v${{ github.event.inputs.patch_version }}.ipa Payload
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: v${{ github.event.inputs.app_version }}-Patchv${{ github.event.inputs.patch_version }}
+          tag_name: v${{ github.event.inputs.app_version }}-Patch-v${{ github.event.inputs.patch_version }}
           name: "${{ github.event.inputs.release_title }} (${{ github.event.inputs.app_version }}-${{ github.event.inputs.patch_version }})"
           files: build/ipa/*.ipa
           body: |
