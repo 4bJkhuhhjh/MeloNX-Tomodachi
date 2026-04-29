@@ -14,7 +14,7 @@ on:
       release_title:
         description: 'Title for the release'
         required: false
-        default: 'MeloNX Tomadachi Life: Living The Dream Patch'
+        default: 'MeloNX Tomadachi Life: LTD'
 
 jobs:
   build-and-release:
@@ -52,7 +52,7 @@ jobs:
             -sdk iphoneos \
             -arch arm64 \
             -derivedDataPath build \
-            RODUCT_BUNDLE_IDENTIFIER="com.stossy11.MeloNX" \
+            PRODUCT_BUNDLE_IDENTIFIER="com.stossy11.MeloNX" \
             CODE_SIGNING_ALLOWED=NO \
             CODE_SIGNING_REQUIRED=NO \
             CODE_SIGN_IDENTITY="" \
@@ -65,7 +65,7 @@ jobs:
           cp -R build/Build/Products/Release-iphoneos/MeloNX.app build/ipa/Payload/
           cp src/MeloNX/MeloNX/Info.plist build/ipa/Payload/MeloNX.app/
           cd build/ipa
-          zip -r MeloNX-v${{ github.event.inputs.app_version }}-Patchv${{ github.event.inputs.patch_version }}.ipa Payload
+          zip -r MeloNX-v${{ github.event.inputs.app_version }}-Patch-v${{ github.event.inputs.patch_version }}.ipa Payload
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
