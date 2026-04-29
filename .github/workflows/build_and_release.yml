@@ -1,0 +1,82 @@
+name: Manual iOS Release
+
+on:
+  workflow_dispatch:
+    inputs:
+      app_version:
+        description: 'Base MeloNX Version'
+        required: true
+        default: '2.3.1'
+      patch_version:
+        description: 'Patch Version'
+        required: true
+        default: '1.0.0'
+      release_title:
+        description: 'Title for the release'
+        required: false
+        default: 'MeloNX Tomadachi Life: Living The Dream Patch'
+
+jobs:
+  build-and-release:
+    runs-on: macos-latest
+    permissions:
+      contents: write
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Setup .NET 8.0
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+      
+      - name: Build Dependencies
+        run: |
+          chmod +x distribution/ios/*.sh
+          bash distribution/ios/compile.sh
+          bash distribution/ios/xc-compile.sh
+      
+      - name: Setup Xcode
+        uses: maxim-lobanov/setup-xcode@v1
+        with:
+          xcode-version: latest-stable
+
+      - name: Build Xcode project
+        run: |
+          sed -i '' 's/CODE_SIGN_STYLE = Automatic;/CODE_SIGN_STYLE = Manual;/g' src/MeloNX/MeloNX.xcodeproj/project.pbxproj
+          sed -i '' 's/CODE_SIGNING_REQUIRED = YES;/CODE_SIGNING_REQUIRED = NO;/g' src/MeloNX/MeloNX.xcodeproj/project.pbxproj
+          xcodebuild clean build -workspace src/MeloNX/MeloNX.xcodeproj/project.xcworkspace \
+            -scheme MeloNX \
+            -configuration Release \
+            -sdk iphoneos \
+            -arch arm64 \
+            -derivedDataPath build \
+            CODE_SIGNING_ALLOWED=NO \
+            CODE_SIGNING_REQUIRED=NO \
+            CODE_SIGN_IDENTITY="" \
+            PROVISIONING_PROFILE_SPECIFIER="" \
+            AD_HOC_CODE_SIGNING_ALLOWED=YES
+
+      - name: Package Unsigned IPA
+        run: |
+          mkdir -p build/ipa/Payload
+          cp -R build/Build/Products/Release-iphoneos/MeloNX.app build/ipa/Payload/
+          cp src/MeloNX/MeloNX/Info.plist build/ipa/Payload/MeloNX.app/
+          cd build/ipa
+          zip -r MeloNX-v${{ github.event.inputs.app_version }}-Patchv${{ github.event.inputs.patch_version }}.ipa Payload
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: v${{ github.event.inputs.app_version }}-Patchv${{ github.event.inputs.patch_version }}
+          name: "${{ github.event.inputs.release_title }} (${{ github.event.inputs.app_version }}-${{ github.event.inputs.patch_version }})"
+          files: build/ipa/*.ipa
+          body: |
+            ## Release Details
+            - **Base App Version:** ${{ github.event.inputs.app_version }}
+            - **Patch Version:** ${{ github.event.inputs.patch_version }}
+          draft: false
+          prerelease: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
