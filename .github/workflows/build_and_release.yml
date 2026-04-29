@@ -44,8 +44,8 @@ jobs:
 
       - name: Build Xcode project
         run: |
-          sed -i '' 's/CODE_SIGN_STYLE = Automatic;/CODE_SIGN_STYLE = Manual;/g' src/MeloNX/MeloNX.xcodeproj/project.pbxproj
-          sed -i '' 's/CODE_SIGNING_REQUIRED = YES;/CODE_SIGNING_REQUIRED = NO;/g' src/MeloNX/MeloNX.xcodeproj/project.pbxproj
+          #sed -i '' 's/CODE_SIGN_STYLE = Automatic;/CODE_SIGN_STYLE = Manual;/g' src/MeloNX/MeloNX.xcodeproj/project.pbxproj
+          #sed -i '' 's/CODE_SIGNING_REQUIRED = YES;/CODE_SIGNING_REQUIRED = NO;/g' src/MeloNX/MeloNX.xcodeproj/project.pbxproj
           xcodebuild clean build -workspace src/MeloNX/MeloNX.xcodeproj/project.xcworkspace \
             -scheme MeloNX \
             -configuration Release \
@@ -63,7 +63,7 @@ jobs:
         run: |
           mkdir -p build/ipa/Payload
           cp -R build/Build/Products/Release-iphoneos/MeloNX.app build/ipa/Payload/
-          cp src/MeloNX/MeloNX/Info.plist build/ipa/Payload/MeloNX.app/
+          #cp src/MeloNX/MeloNX/Info.plist build/ipa/Payload/MeloNX.app/
           plutil -replace CFBundleIdentifier -string "com.stossy11.MeloNX" build/ipa/Payload/MeloNX.app/Info.plist
           cd build/ipa
           zip -r MeloNX-v${{ github.event.inputs.app_version }}-Patch-v${{ github.event.inputs.patch_version }}.ipa Payload
