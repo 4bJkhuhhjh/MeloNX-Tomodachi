@@ -21,7 +21,7 @@ namespace Ryujinx.HLE.HOS.Applets.SoftwareKeyboard
         const string CancelText = "Cancel";
         const string ControllerToggleText = "Toggle input";
 
-        private readonly Lock _bufferLock = new();
+        private readonly object _bufferLock = new();
 
         private RenderingSurfaceInfo _surfaceInfo = null;
         private SKImageInfo _imageInfo;
