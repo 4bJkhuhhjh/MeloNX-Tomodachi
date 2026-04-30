@@ -63,7 +63,7 @@ namespace Ryujinx.HLE.HOS.Applets
         private bool _canAcceptController = false;
         private KeyboardInputMode _inputMode = KeyboardInputMode.ControllerAndKeyboard;
 
-        private readonly Lock _lock = new();
+        private readonly object _lock = new();
 
         public event EventHandler AppletStateChanged;
 
