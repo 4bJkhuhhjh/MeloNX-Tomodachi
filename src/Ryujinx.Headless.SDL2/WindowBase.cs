@@ -570,13 +570,14 @@ namespace Ryujinx.Headless.SDL2
 
         public bool DisplayInputDialog(SoftwareKeyboardUIArgs args, out string userText)
         {
-            userText = string.Empty;
-
+            string temp = string.Empty;
+        
             DisplayInputDialog(args, text =>
             {
-                userText = text ?? string.Empty;
+                temp = text ?? string.Empty;
             });
-
+        
+            userText = temp;
             return true;
         }
 
