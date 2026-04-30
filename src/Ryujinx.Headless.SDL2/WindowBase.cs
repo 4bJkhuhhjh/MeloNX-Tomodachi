@@ -12,6 +12,7 @@ using Ryujinx.Input;
 using Ryujinx.Input.HLE;
 using Ryujinx.SDL2.Common;
 using System;
+using Ryujinx.HLE.HOS.Services.Account.Acc;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -567,6 +568,44 @@ namespace Ryujinx.Headless.SDL2
             return true;
         }
 
+        public bool DisplayInputDialog(SoftwareKeyboardUIArgs args, out string userText)
+        {
+            userText = string.Empty;
+
+            DisplayInputDialog(args, text =>
+            {
+                userText = text ?? string.Empty;
+            });
+
+            return true;
+        }
+
+        public bool DisplayCabinetDialog(out string userText)
+        {
+            userText = string.Empty;
+            return true;
+        }
+
+        public void DisplayCabinetMessageDialog()
+        {
+            // No-op (headless)
+        }
+
+        public bool DisplayErrorAppletDialog(string title, string message, string[] buttonsText, (uint Module, uint Description)? errorCode = null)
+        {
+            // Reuse existing implementation
+            return DisplayErrorAppletDialog(title, message, buttonsText);
+        }
+        
+        public UserProfile ShowPlayerSelectDialog()
+        {
+            return null;
+        }
+        
+        public void TakeScreenshot()
+        {
+            // No-op
+        }
         public void Dispose()
         {
             Dispose(true);
